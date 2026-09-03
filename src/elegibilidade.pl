@@ -1,10 +1,16 @@
+:- encoding(utf8).
+
 % ==============================================================================
 % CAMADA 2: REGRAS DE ELEGIBILIDADE
 % Arquivo: elegibilidade.pl
 % ==============================================================================
 
-% Carrega a base de fatos
-:- consult('curriculum.pl').
+% Carrega a base de fatos.
+% ensure_loaded/1 em vez de consult/1: se elegibilidade.pl e um futuro
+% trilhas.pl/main.pl consultarem curriculum.pl ao mesmo tempo, consult/1
+% recarregaria o arquivo (gerando warnings de "redefinição de procedimento");
+% ensure_loaded/1 só carrega uma vez, mesmo que vários arquivos dependam dele.
+:- ensure_loaded('curriculum.pl').
 
 % ------------------------------------------------------------------------------
 % prerequisitos_ok(Aluno, Disciplina)
@@ -45,8 +51,16 @@ disciplinas_liberadas(Aluno, Lista) :-
 % independentemente de elegibilidade (não olha pré-requisito).
 % ------------------------------------------------------------------------------
 disciplinas_pendentes(Aluno, Lista) :-
-    % Instancia D como obrigatória, garante que não cursou, e coleta no setof
-    ( setof(D, (disciplina(D, obrigatoria, _, _), \+ cursou(Aluno, D)), Lista) -> true ; Lista = [] ).
+    % Instancia D como obrigatória, garante que não cursou, e coleta no setof.
+    % ATENÇÃO: Creditos e Semestre aparecem livres dentro do próprio objetivo do
+    % setof (não escondidos atrás de uma chamada de predicado, como em
+    % disciplinas_liberadas/2). Sem quantificá-los existencialmente com ^, o
+    % setof os trata como variáveis de agrupamento e devolve uma lista por
+    % combinação de Creditos-Semestre, em vez de uma única lista com tudo.
+    ( setof(D, Creditos^Semestre^(disciplina(D, obrigatoria, Creditos, Semestre), \+ cursou(Aluno, D)), Lista)
+    -> true
+    ;  Lista = []
+    ).
 
 % ------------------------------------------------------------------------------
 % creditos_cursados(Aluno, Total)

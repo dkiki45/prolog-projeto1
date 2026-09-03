@@ -1,3 +1,5 @@
+:- encoding(utf8).
+
 % ==============================================================================
 % CAMADA 1: BASE DE FATOS
 % ==============================================================================
@@ -81,6 +83,10 @@ prerequisito(conectividade_sistemas_ciberfisicos, fundamentos_sistemas_ciberfisi
 prerequisito(redes_convergentes, conectividade_sistemas_ciberfisicos).
 prerequisito(sistemas_operacionais, conectividade_sistemas_ciberfisicos).
 
+% Cadeia de Profundidade 3 (nº 3): programacao_distribuida -> redes_convergentes ->
+% conectividade_sistemas_ciberfisicos -> fundamentos_sistemas_ciberfisicos
+prerequisito(programacao_distribuida, redes_convergentes).
+
 prerequisito(programacao_logica_funcional, resolucao_problemas_logica_matematica).
 prerequisito(resolucao_problemas_discreta, resolucao_problemas_logica_matematica).
 
@@ -91,6 +97,10 @@ prerequisito(inteligencia_artificial, metodos_quantitativos).
 
 prerequisito(complexidade_algoritmos, resolucao_problemas_estruturados).
 prerequisito(resolucao_problemas_grafos, resolucao_problemas_estruturados).
+
+% Cadeia de Profundidade 3 (nº 4): complexidade_algoritmos (ou resolucao_problemas_grafos) ->
+% resolucao_problemas_estruturados -> resolucao_problemas_discreta -> resolucao_problemas_logica_matematica
+prerequisito(resolucao_problemas_estruturados, resolucao_problemas_discreta).
 
 
 % ------------------------------------------------------------------------------
